@@ -36,7 +36,7 @@ const profileUpdate = {
         length: { minimum: 1, message: 'cannot be empty' },
     },
     bio: {
-        length: { maximum: 350, allowEmpty: true }
+        length: { maximum: 150, allowEmpty: true }
     }
 }
 

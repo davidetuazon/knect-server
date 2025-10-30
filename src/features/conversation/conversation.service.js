@@ -2,7 +2,7 @@ const MessageModel = require('./message.model');
 const ConversationModel = require('./conversation.model');
 const UserModel = require('../user/user.model');
 
-exports.listAll = async (userId) => {
+exports.listConversations = async (userId) => {
     try {
         const filter = {
             deleted: false,

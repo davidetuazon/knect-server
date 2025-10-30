@@ -67,7 +67,7 @@ exports.uploadPhoto = async (req, res, next) => {
 
         const updatedUser = await UserService.uploadPhoto(req.user._id, req.file);
 
-        res.status(200).json({ success: true, message: 'Profile photo updated', photo: updatedUser.profilePhoto });
+        res.status(200).json({ success: true, message: 'Profile photo updated', user: updatedUser });
     } catch (e) {
         if (e.status) return res.status(e.status).json({ error: e.message });
         return res.status(500).json({ error: e.message });

@@ -6,6 +6,8 @@ const utils = require('../../shared/helpers/utils');
 
 router.get('/discover', utils.authenticate, discoveryController.getDiscoveryFeed);
 
+router.get('/discover/profile/:id', utils.authenticate, discoveryController.userGet);
+
 router.post('/discover/like', utils.authenticate, discoveryController.userLike);
 
 router.post('/discover/skip', utils.authenticate, discoveryController.userSkip);

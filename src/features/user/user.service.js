@@ -38,7 +38,7 @@ exports.signIn = async (params) => {
 }
 
 exports.updateProfile = async (userId, updates) => {
-    const safeUpdates = allowedUpdates(['fullName', 'bio'], updates);
+    const safeUpdates = allowedUpdates(['fullName', 'age', 'bio'], updates);
 
     try {
         const user = await UserModel.findByIdAndUpdate(userId, safeUpdates, { new: true });

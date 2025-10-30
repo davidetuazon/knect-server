@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const LikeService = require('./discovery.like.service');
 const MatchService = require('./discovery.match.service');
 const LikeModel = require('./discovery.like.model');
+const { toSafeUser } = require('../user/user.utils');
 
 exports.discoverUser = async (userId, options = {}) => {
     const oneMonthAgo = new Date();
@@ -112,3 +113,15 @@ exports.likeUser = async (userId, likedUserId) => {
         throw(e);
     }
  }
+
+ exports.getUser = async (userId) => {
+    try {
+        const validUser = await UserModel.findOne({ deleted: false, _id: userId });
+        if (!validUser) throw { status: 404, message: 'User not found' };
+
+        const safeUser = toSafeUser(validUser);
+        return safeUser;
+    } catch (e) {
+        throw(e);
+    }
+}

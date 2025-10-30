@@ -10,7 +10,7 @@ router.post('/user/login', userController.login);
 
 router.patch('/settings/profile', utils.authenticate, userController.updateProfile);
 
-router.patch('/settings/profile-photo', utils.authenticate, utils.upload.single('photo'), userController.uploadPhoto);
+router.patch('/settings/profile-photo', utils.authenticate, utils.upload.single('profilePhoto'), userController.uploadPhoto);
 
 router.get('/me', utils.authenticate, async (req, res, next) => {
     try {

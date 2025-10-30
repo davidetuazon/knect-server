@@ -46,3 +46,18 @@ exports.userLike = async (req, res, next) => {
         return res.status(500).json({ error: e.message });
     }
 }
+
+exports.userGet = async (req, res, next) => {
+    const { id: userId } = req.params;
+    const issues = validate({ userId }, { userId: { presence: true } });
+    if (issues) return res.status(422).json({ error: issues });
+
+    try {
+        const user = await DiscoveryService.getUser(userId);
+
+        res.json({ user });
+    } catch (e) {
+        if (e.status) return res.status(e.status).json({ error: e.message });
+        return res.status(500).json({ error: e.message });
+    }
+}

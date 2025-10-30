@@ -22,9 +22,9 @@ exports.createMessage = async (req, res, next) => {
     }
 };
 
-exports.getAllMessage = async (req, res, next) => {
+exports.getAllConversations = async (req, res, next) => {
     try {
-        const conversationList = await ConversationService.listAll(req.user._id);
+        const conversationList = await ConversationService.listConversations(req.user._id);
 
         res.json(conversationList);
     } catch (e) {
