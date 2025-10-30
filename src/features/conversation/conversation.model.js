@@ -29,4 +29,5 @@ const conversationSchema = new Schema(
         }
     }, { timestamps : { createdAt: 'createdDate', updatedAt: 'updatedDate' } }
 );
+conversationSchema.plugin(mongoosePaginate);
 module.exports = mongoose.model('Conversation', conversationSchema);

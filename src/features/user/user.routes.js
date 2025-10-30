@@ -12,4 +12,12 @@ router.patch('/settings/profile', utils.authenticate, userController.updateProfi
 
 router.patch('/settings/profile-photo', utils.authenticate, utils.upload.single('photo'), userController.uploadPhoto);
 
+router.get('/me', utils.authenticate, async (req, res, next) => {
+    try {
+        res.send(req.user);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    };
+});
+
 module.exports = router;

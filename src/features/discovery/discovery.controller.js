@@ -20,7 +20,7 @@ exports.userSkip = async (req, res, next) => {
     
     try {
         const result = await DiscoveryService.skipUser(req.user._id, skippedUserId);
-        return res.status(200).json({ success: result.success, message: result.message || 'Skipped user', data: result.alreadySkipped });
+        return res.status(200).json({ success: result.success, message: result.message, userId: skippedUserId });
     } catch (e) {
         if (e.status) return res.status(e.status).json({ error: e.message });
         return res.status(500).json({ error: e.message });
@@ -34,7 +34,13 @@ exports.userLike = async (req, res, next) => {
 
     try {
         const result = await DiscoveryService.likeUser(req.user._id, likedUserId);
-        return res.status(200).json({ success: result.success, message: result.message, data: likedUserId });
+        return res.status(200).json({
+            success: result.success,
+            message: result.message,
+            userId: result.userId || likedUserId,
+            conversationId: result.conversationId ?? null,
+            matched: !!result.conversationId
+        });
     } catch (e) {
         if (e.status) return res.status(e.status).json({ error: e.message });
         return res.status(500).json({ error: e.message });

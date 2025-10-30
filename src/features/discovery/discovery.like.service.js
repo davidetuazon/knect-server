@@ -3,6 +3,19 @@ const UserModel = require('../user/user.model');
 
 exports.handleLikes = async (userId, likedUserId) => {
     try {
+        const alreadyMatched = await LikeModel.findOne({
+            deleted: false,
+            senderId: { $in: [userId, likedUserId] },
+            recipientId: { $in: [userId, likedUserId] },
+            status: 'matched',
+        });
+        if (alreadyMatched) return { 
+                success: false,
+                message: 'You are currently matched with this user',
+                userId: likedUserId,
+                matched: true,
+            } 
+
         const existingLike = await LikeModel.findOneAndUpdate(
             {
                 senderId: likedUserId,

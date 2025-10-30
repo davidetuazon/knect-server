@@ -26,7 +26,6 @@ const likeAsInviteSchema = new Schema(
         expiresAt: {
             type: Date,
             default: () => new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-            index: { expires: '0s' },
         },
     }, { timestamps: { createdAt: 'createdDate', updatedAt: 'updatedDate' }}
 );

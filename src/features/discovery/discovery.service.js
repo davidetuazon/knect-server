@@ -56,10 +56,10 @@ exports.skipUser = async (userId, skippedUserId) => {
         if (!validUser) throw { status: 404, message: 'User not found' };
 
         const alreadySkipped = await UserModel.exists({ _id: userId, 'skips.user': skippedUserId });
-        if (alreadySkipped) return { success: false, message: 'Already skipped this user', alreadySkipped };
+        if (alreadySkipped) return { success: false, message: 'Already skipped this user' };
 
         const alreadyLiked = await UserModel.exists({ _id: userId, 'likes.user': skippedUserId });
-        if (alreadyLiked) return { success: false, message: 'Cannot skip already liked users', alreadyLiked };
+        if (alreadyLiked) return { success: false, message: 'Cannot skip already liked users' };
 
         const updatedUser = await UserModel
             .findByIdAndUpdate(
@@ -81,15 +81,15 @@ exports.likeUser = async (userId, likedUserId) => {
         if (!validUser) throw { status: 404, message: 'User not found' };
 
         const alreadyLiked = await UserModel.exists({ _id: userId, 'likes.user': likedUserId });
-        if (alreadyLiked) return { success: false, message: 'Already liked this user', alreadyLiked };
+        if (alreadyLiked) return { success: false, message: 'Already liked this user' };
 
         const alreadySkipped = await UserModel.exists({ _id: userId, 'skips.user': likedUserId });
-        if (alreadySkipped) return { success: false, message: 'Cannot like already skipped users', alreadySkipped };
+        if (alreadySkipped) return { success: false, message: 'Cannot like already skipped users' };
 
         const likes = await LikeService.handleLikes(userId, likedUserId);
         if (likes.matched) {
             const mutual = await MatchService.handleMutualLikes(userId, likedUserId);
-            return { success: true, message: mutual.message, match: true }
+            return { success: true, message: mutual.message, conversationId: mutual.conversationId }
         }
 
         await Promise.all([
@@ -104,10 +104,10 @@ exports.likeUser = async (userId, likedUserId) => {
             ),
         ]);
         
-        return { success: true, message: "You've sent a like!", match: false, user: likedUserId };
+        return { success: true, message: "You've sent a like!", userId: likedUserId };
     } catch (e) {
         if (e.code === 11000) {
-            return { success: false, match: false, message: 'Already liked this user' };
+            return { success: false, matched: false, message: 'Already liked or matched with this user' };
         }
         throw(e);
     }
