@@ -50,11 +50,4 @@ app.use(basepath + '/v1', userRoute);
 app.use(basepath + '/v1', discoveryRoute);
 app.use(basepath + '/v1', conversationRoute);
 
-
-const PORT = process.env.PORT || 5000;
-
-HttpServer.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server is listening on port ${PORT}`);
-});
-
 module.exports = app;
