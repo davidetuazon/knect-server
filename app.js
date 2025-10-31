@@ -5,6 +5,9 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
+const http = require('http');
+
+const { initSocket } = require('./src/socket');
 
 const app = express();
 
@@ -19,6 +22,12 @@ app.use(express.urlencoded({ extended: true }));
 // });
 
 // app.use(rateLimiter);
+
+const HttpServer = http.createServer(app);
+
+initSocket(HttpServer);
+
+app.get('/', (req, res) => res.send('Socket.io with Express'));
 
 const mongoURI = process.env.NODE_ENV === 'production' ? process.env.MONGO_URI : process.env.MONGO_URI_LOCAL;
 
@@ -40,5 +49,12 @@ const conversationRoute = require(path.resolve('.') + '/src/features/conversatio
 app.use(basepath + '/v1', userRoute);
 app.use(basepath + '/v1', discoveryRoute);
 app.use(basepath + '/v1', conversationRoute);
+
+
+const PORT = process.env.PORT || 5000;
+
+HttpServer.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server is listening on port ${PORT}`);
+});
 
 module.exports = app;

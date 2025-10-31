@@ -12,4 +12,8 @@ router.post('/discover/like', utils.authenticate, discoveryController.userLike);
 
 router.post('/discover/skip', utils.authenticate, discoveryController.userSkip);
 
+router.get('/matches', utils.authenticate, discoveryController.userMatchList);
+
+router.get('/likes', utils.authenticate, discoveryController.userLikerList);
+
 module.exports = router;

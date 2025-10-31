@@ -1,5 +1,8 @@
 const DiscoveryService = require('./discovery.service');
+const MatchService = require('./discovery.match.service');
+const LikeService = require('./discovery.like.service');
 const validate = require('validate.js');
+const mongoose = require('mongoose');
 
 exports.getDiscoveryFeed = async (req, res, next) => {
     const limit = parseInt(req.query.limit) || 20;
@@ -28,12 +31,14 @@ exports.userSkip = async (req, res, next) => {
 }
 
 exports.userLike = async (req, res, next) => {
+    // console.log(req.body);
     const { likedUserId } = req.body;
     const issues = validate({ likedUserId }, { likedUserId:  { presence: true } });
     if (issues) return res.status(422).json({ error: issues });
 
+    const likedId = new mongoose.Types.ObjectId(likedUserId);
     try {
-        const result = await DiscoveryService.likeUser(req.user._id, likedUserId);
+        const result = await DiscoveryService.likeUser(req.user._id, likedId);
         return res.status(200).json({
             success: result.success,
             message: result.message,
@@ -56,6 +61,28 @@ exports.userGet = async (req, res, next) => {
         const user = await DiscoveryService.getUser(userId);
 
         res.json({ user });
+    } catch (e) {
+        if (e.status) return res.status(e.status).json({ error: e.message });
+        return res.status(500).json({ error: e.message });
+    }
+}
+
+exports.userMatchList = async (req, res, next) => {
+    try {
+        const matchList = await MatchService.getMatchedUsers(req.user._id);
+
+        res.json(matchList);
+    } catch (e) {
+        if (e.status) return res.status(e.status).json({ error: e.message });
+        return res.status(500).json({ error: e.message });
+    }
+}
+
+exports.userLikerList = async (req, res, next) => {
+    try {
+        const likerList = await LikeService.listLikers(req.user._id);
+
+        res.json(likerList);
     } catch (e) {
         if (e.status) return res.status(e.status).json({ error: e.message });
         return res.status(500).json({ error: e.message });

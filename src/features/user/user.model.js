@@ -47,7 +47,14 @@ const userSchema = new Schema(
                     type: mongoose.Types.ObjectId,
                     ref: 'User',
                 },
-                likedAt: Date,
+                likedAt: {
+                    type: Date,
+                    default: Date.now
+                },
+                expiresAt: {
+                    type: Date,
+                    default: () => new Date(Date.now() + 30*24*60*60*1000)
+                },
         }],
         skips: [{
                 _id: false,
@@ -55,7 +62,14 @@ const userSchema = new Schema(
                     type: mongoose.Types.ObjectId,
                     ref: 'User',
                 },
-                skippedAt: Date,
+                skippedAt: {
+                    type: Date,
+                    default: Date.now
+                },
+                expiresAt: {
+                    type: Date,
+                    default: () => new Date(Date.now() + 30*24*60*60*1000)
+                },
         }],
         matches: [{
                 _id: false,

@@ -31,15 +31,15 @@ exports.discoverUser = async (userId, options = {}) => {
         const users = await UserModel.aggregate([
             { $match: matchStage },
             { $project: {
-                deleted: 0,
-                password: 0,
-                refreshToken: 0,
-                likes: 0,
-                skips: 0,
-                matches: 0,
-                __v: 0,
-                createdDate: 0,
-                updatedDate: 0
+                    deleted: 0,
+                    password: 0,
+                    refreshToken: 0,
+                    likes: 0,
+                    skips: 0,
+                    matches: 0,
+                    __v: 0,
+                    createdDate: 0,
+                    updatedDate: 0
                 }
             },
             { $sample: { size: limit } },

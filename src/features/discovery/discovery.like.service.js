@@ -1,5 +1,6 @@
 const LikeModel = require('./discovery.like.model');
 const UserModel = require('../user/user.model');
+const mongoose = require('mongoose');
 
 exports.handleLikes = async (userId, likedUserId) => {
     try {
@@ -38,6 +39,41 @@ exports.handleLikes = async (userId, likedUserId) => {
         }
 
         return { matched: false };
+    } catch (e) {
+        throw(e);
+    }
+}
+
+exports.listLikers = async (userId) => {
+    const limit = 20;
+    try {
+        const filter = {
+            deleted: false,
+            likes: { $elemMatch: { 
+                    user: userId,
+                    expiresAt: { $gt: new Date() },
+                } 
+            },
+        };
+
+        const list = await UserModel.aggregate([
+            { $match: filter },
+            { $project: {
+                    deleted: 0,
+                    password: 0,
+                    refreshToken: 0,
+                    likes: 0,
+                    skips: 0,
+                    matches: 0,
+                    __v: 0,
+                    createdDate: 0,
+                    updatedDate: 0
+                }
+            },
+            { $sample: { size: limit } },
+        ]);
+        
+        return list;
     } catch (e) {
         throw(e);
     }

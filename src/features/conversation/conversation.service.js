@@ -13,6 +13,9 @@ exports.listConversations = async (userId) => {
             limit: 10,
             sort: { createdDate: -1 },
             lean: true,
+            populate: [
+                { path: 'participants', select: 'fullName profilePhoto', match: { _id: { $ne: userId } } }
+            ]
         }
 
         const conversation = await ConversationModel.paginate(filter, paginateOptions);

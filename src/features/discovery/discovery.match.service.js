@@ -31,3 +31,26 @@ exports.handleMutualLikes = async (userId, likedUserId) => {
         throw(e);
     }
 }
+
+exports.getMatchedUsers = async (userId) => {
+    const sensitive = '-likes -skips -password -refreshToken -__v -matches -createdDate -updatedDate';
+    try {
+        const filter = {
+            deleted: false,
+            matches: { $elemMatch: { user: userId } },
+        };
+
+        const paginateOptions = {
+            page: 1,
+            limit: 10,
+            sort: { matchedAt: -1 },
+            lean: true,
+            select: sensitive,
+        }
+
+        const matches = UserModel.paginate(filter, paginateOptions);
+        return matches || [];
+    } catch (e) {
+        throw(e);
+    }
+}
