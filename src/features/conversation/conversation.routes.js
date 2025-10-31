@@ -6,6 +6,10 @@ const conversationController = require('./conversation.controller');
 
 router.get('/messages', utils.authenticate, conversationController.getAllConversations);
 
+// router.get('/messages/:id', utils.authenticate, conversationController.getConversation);
+
+router.get('/messages/:id', utils.authenticate, conversationController.geAllMessages);
+
 router.post('/messages/:conversationId', utils.authenticate, conversationController.createMessage);
 
 module.exports = router;

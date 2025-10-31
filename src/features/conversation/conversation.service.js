@@ -26,7 +26,7 @@ exports.listConversations = async (userId) => {
     }
 }
 
-exports.create = async (userId, conversationId, recipientId, content, timestamp) => {
+exports.createMessage = async (userId, conversationId, recipientId, content, timestamp) => {
     if (!content) throw {status: 400, message: 'Missing message content' };
     try {
         const validUser = await UserModel.exists({ deleted: false, _id: recipientId});
@@ -46,5 +46,43 @@ exports.create = async (userId, conversationId, recipientId, content, timestamp)
         return message;
     } catch (e) {
         throw(e);
+    }
+}
+
+exports.getConversation = async (userId, conversationId) => {
+    try {
+        const conversation = await ConversationModel.findOne({
+            deleted: false,
+            participants: { $in: userId },
+            _id: conversationId,
+        });
+        if (!conversation) throw { status: 404, message: 'Conversation not found' };
+
+        return conversation;
+    } catch (e) {
+        throw (e);
+    }
+}
+
+exports.listMessages = async (userId, conversationId) => {
+    const sensitive = '-conversationId -recipientId -_id'
+    try {
+        const filter = {
+            deleted: false,
+            senderId: userId,
+            conversationId,
+        }
+
+        const paginateOptions = {
+            sort: { timeStamp: -1 },
+            select: sensitive,
+            lean: true,
+        };
+
+        const messages = await MessageModel.paginate(filter, paginateOptions);
+
+        return messages || [];
+    } catch (e) {
+        throw (e);
     }
 }

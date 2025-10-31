@@ -8,43 +8,41 @@ let io;
 function initSocket(server) {
     io = new Server(server, {
         cors: {
-            origin: 'http://localhost:3000',
-            methods: ["GET", "POST", "PATCH"],
+            origin: [
+                'http://localhost:3000',
+                'https://knect-wc-dating-app.onrender.com',
+            ],
+            methods: ['GET', 'POST', 'PATCH'],
         },
         path: '/socket.io',
-        transports: ['websocket', 'polling']
+        transports: ['websocket', 'polling'],
     });
 
-    console.log("Socket.IO initialized");
+    console.log('Socket.IO initialized');
 
-    io.use((socket, next) => {
-        const token = socket.handshake.auth.token;
-        console.log("Received token:", token);
+    io.use(async (socket, next) => {
+        const token = socket.handshake.auth?.token;
 
         if (!token) return next(new Error('Unauthorized'));
 
         try {
-            const user = verifyToken(token);
+            const user = await verifyToken(token);
+            if (!user) return next(new Error('Invalid or expired token'));
+
             socket.user = user;
             next();
-        } catch(e) {
-            next(new Error('Invalid token'));
+        } catch (e) {
+            console.error('Socket auth error:', e.message);
+            next(new Error('Invalid or expired token'));
         }
     });
 
     io.on('connection', (socket) => {
-      console.log('Socket connected:', socket.id);
-    });
-
-    io.use((socket, next) => {
-  const token = socket.handshake.auth.token;
-  console.log("Received token:", token); // should now log your hardcoded token
-  next();
-});
-
-
-    io.on('connection', (socket) => {
-        console.log('Socket connected: ', socket.user._id);
+        console.log(
+            'Socket connected:',
+            socket.id,
+            socket.user ? socket.user._id : '(no user)'
+        );
 
         socket.on('joinRoom', async ({ conversationId }) => {
             try {
@@ -53,7 +51,7 @@ function initSocket(server) {
                 const conversation = await ConversationModel.findById(conversationId);
                 if (!conversation) return socket.emit('error', 'Conversation not found');
 
-                if (!conversation.participants.some(p => p.equals(socket.user._id))) {
+                if (!conversation.participants.some((p) => p.equals(socket.user._id))) {
                     return socket.emit('error', 'Unauthorized room access');
                 }
 
@@ -66,15 +64,18 @@ function initSocket(server) {
         });
 
         socket.on('message', async ({ conversationId, message }) => {
+            console.log('Server received message:', message);
             try {
                 const conversation = await ConversationModel.findById(conversationId);
                 if (!conversation) return socket.emit('error', 'Conversation not found');
 
-                if (!conversation.participants.some(p => p.equals(socket.user._id))) {
+                if (!conversation.participants.some((p) => p.equals(socket.user._id))) {
                     return socket.emit('error', 'Unauthorized room access');
                 }
 
-                const recipientId = conversation.participants.find(p => !p.equals(socket.user._id));
+                const recipientId = conversation.participants.find(
+                    (p) => !p.equals(socket.user._id)
+                );
 
                 const newMessage = new Message({
                     conversationId,
@@ -102,7 +103,7 @@ function initSocket(server) {
         });
 
         socket.on('disconnect', () => {
-            console.log('Socket disconnected: ', socket.user._id);
+            console.log('Socket disconnected:', socket.user?._id || '(unknown)');
         });
     });
 }
