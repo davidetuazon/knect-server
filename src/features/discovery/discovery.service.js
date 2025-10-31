@@ -5,6 +5,7 @@ const MatchService = require('./discovery.match.service');
 const LikeModel = require('./discovery.like.model');
 const { toSafeUser } = require('../user/user.utils');
 
+// handle app main feed
 exports.discoverUser = async (userId, options = {}) => {
     const oneMonthAgo = new Date();
     oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
@@ -16,6 +17,7 @@ exports.discoverUser = async (userId, options = {}) => {
 
         const recentFilter = (entry, field) => entry[field] > oneMonthAgo;
 
+        // exclude other users that are already liked, skipped, matched by current user
         const excluded = [
             currUser._id.toString(),
             ...currUser.matches.map(match => match.user.toString()),
@@ -51,6 +53,7 @@ exports.discoverUser = async (userId, options = {}) => {
     }
 }
 
+// handle user skipping
 exports.skipUser = async (userId, skippedUserId) => {
     try {
         const validUser = await UserModel.exists({ deleted: false, _id: skippedUserId });
@@ -76,6 +79,7 @@ exports.skipUser = async (userId, skippedUserId) => {
     }
 }
 
+// handle user liking outer level
 exports.likeUser = async (userId, likedUserId) => {
     try {
         const validUser = await UserModel.exists({ deleted: false, _id: likedUserId });

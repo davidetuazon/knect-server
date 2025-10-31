@@ -13,6 +13,9 @@ if (process.env.NODE_ENV !== 'test') {
     });
 }
 
+/**
+ * cron job for cleaning up expired likes and skips in user model
+ */
 const removeExpiredLikesAndSkips = async () => {
     const now = new Date();
 

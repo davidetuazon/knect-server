@@ -2,6 +2,7 @@ const LikeModel = require('./discovery.like.model');
 const UserModel = require('../user/user.model');
 const mongoose = require('mongoose');
 
+// handle user liking inner level
 exports.handleLikes = async (userId, likedUserId) => {
     try {
         const alreadyMatched = await LikeModel.findOne({

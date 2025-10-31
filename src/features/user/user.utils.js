@@ -1,3 +1,6 @@
+/**
+ * returns safe user with sensitive fields ommited
+ */
 const toSafeUser = (userDoc) => {
     if (!userDoc) return null;
     const safeUser = userDoc.toObject();

@@ -1,6 +1,7 @@
 const UserModel = require('../user/user.model');
 const ConversationModel = require('../conversation/conversation.model');
 
+// handle matching for mutual liked users
 exports.handleMutualLikes = async (userId, likedUserId) => {
     const matchedAt = new Date();
     try {
@@ -32,6 +33,7 @@ exports.handleMutualLikes = async (userId, likedUserId) => {
     }
 }
 
+// handle listing matches
 exports.getMatchedUsers = async (userId) => {
     const sensitive = '-likes -skips -password -refreshToken -__v -matches -createdDate -updatedDate';
     try {

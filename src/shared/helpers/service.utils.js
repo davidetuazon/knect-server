@@ -1,3 +1,6 @@
+/**
+ * filter only allowed updates
+ */
 const allowedUpdates = (fields, updates) => {
     const allowedFields = fields;
     const safeUpdates = {};

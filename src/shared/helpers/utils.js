@@ -4,6 +4,10 @@ const UserModel = require('../../features/user/user.model');
 const CONSTANTS = require('./constants');
 const multer = require('multer');
 
+/**
+ * attaches user to requests
+ * used for authentication
+ */
 const authenticate = async (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -20,6 +24,10 @@ const authenticate = async (req, res, next) => {
     }
 }
 
+/**
+ * token verification
+ * mainly used by socket.io
+ */
 const verifyToken = async (token) => {
     if (!token) throw new Error('Unauthorized')
 
@@ -35,6 +43,9 @@ const verifyToken = async (token) => {
     }
 }
 
+/** 
+ * ensure request only accept image uploads
+*/
 const storage = multer.memoryStorage();
 
 const fileFilter = (req, file, cb) => {

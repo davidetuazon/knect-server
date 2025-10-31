@@ -4,6 +4,7 @@ const { toSafeUser } = require('./user.utils');
 const { allowedUpdates } = require('../../shared/helpers/service.utils');
 const cloudinary = require('../../config/cloudinary');
 
+// handle creation of new user
 exports.createUser = async (params) => {
     if (!params) throw { status: 400, message: 'Missing request body' };
 
@@ -14,6 +15,7 @@ exports.createUser = async (params) => {
     }
 }
 
+// handle user sign in
 exports.signIn = async (params) => {
     if (!params) throw { status: 400, message: 'Missing request body' };
 
@@ -37,6 +39,7 @@ exports.signIn = async (params) => {
     }
 }
 
+// handle profile update
 exports.updateProfile = async (userId, updates) => {
     const safeUpdates = allowedUpdates(['fullName', 'age', 'bio'], updates);
 
@@ -51,6 +54,7 @@ exports.updateProfile = async (userId, updates) => {
     }
 }
 
+// handle photo upload
 exports.uploadPhoto = async (userId, file) => {
     try {
         const base64 = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;

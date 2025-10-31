@@ -5,6 +5,9 @@ const { verifyToken } = require('../shared/helpers/utils');
 
 let io;
 
+/**
+ * initializes socket.io server and manages real-time messages
+ */
 function initSocket(server) {
     io = new Server(server, {
         cors: {
@@ -20,6 +23,7 @@ function initSocket(server) {
 
     console.log('Socket.IO initialized');
 
+    // handle token authentication
     io.use(async (socket, next) => {
         const token = socket.handshake.auth?.token;
 
@@ -37,6 +41,7 @@ function initSocket(server) {
         }
     });
 
+    // handle room joining for participants of conversation
     io.on('connection', (socket) => {
         console.log(
             'Socket connected:',
@@ -63,6 +68,7 @@ function initSocket(server) {
             }
         });
 
+        // broadcast new messages to all participants of conversation
         socket.on('message', async ({ conversationId, message }) => {
             console.log('Server received message:', message);
             try {
@@ -108,6 +114,7 @@ function initSocket(server) {
     });
 }
 
+// returns socket.io instance
 function getIO() {
     if (!io) throw new Error('Socket.io not initialized');
     return io;

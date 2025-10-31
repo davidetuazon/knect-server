@@ -2,6 +2,7 @@ const MessageModel = require('./message.model');
 const ConversationModel = require('./conversation.model');
 const UserModel = require('../user/user.model');
 
+// handle conversation listing
 exports.listConversations = async (userId) => {
     try {
         const filter = {
@@ -26,6 +27,7 @@ exports.listConversations = async (userId) => {
     }
 }
 
+// handle message creation, for now socket.io is responsible for this
 exports.createMessage = async (userId, conversationId, recipientId, content, timestamp) => {
     if (!content) throw {status: 400, message: 'Missing message content' };
     try {
@@ -49,6 +51,7 @@ exports.createMessage = async (userId, conversationId, recipientId, content, tim
     }
 }
 
+// handle getting specific conversation
 exports.getConversation = async (userId, conversationId) => {
     try {
         const conversation = await ConversationModel.findOne({
@@ -64,6 +67,7 @@ exports.getConversation = async (userId, conversationId) => {
     }
 }
 
+// handle listing all messages inside a conversation
 exports.listMessages = async (userId, conversationId) => {
     try {
         const filter = {
