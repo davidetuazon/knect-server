@@ -1,4 +1,4 @@
-# Knect - Entry for Whitecloack Launchpad Builder Round: Build a Dating App
+# Knect - Entry for Whitecloak Launchpad Builder Round: Build a Dating App
 
 ## Overview
 A MERN stack dating app with real-time messaging and swiping/matching features. Built with TypeScript, React, Node.js, Express, MongoDB, and Socket.IO.
