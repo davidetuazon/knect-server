@@ -65,17 +65,18 @@ exports.getConversation = async (userId, conversationId) => {
 }
 
 exports.listMessages = async (userId, conversationId) => {
-    const sensitive = '-conversationId -recipientId -_id'
     try {
         const filter = {
             deleted: false,
-            senderId: userId,
+            $or: [
+              { senderId: userId },
+              { recipientId: userId }  
+            ],
             conversationId,
         }
 
         const paginateOptions = {
             sort: { timeStamp: -1 },
-            select: sensitive,
             lean: true,
         };
 
