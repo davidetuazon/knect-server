@@ -76,7 +76,7 @@ exports.listMessages = async (userId, conversationId) => {
         }
 
         const paginateOptions = {
-            sort: { timeStamp: -1 },
+            sort: { timeStamp: 1 },
             lean: true,
         };
 
